@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import {Connection} from 'typeorm'
 
 const getDatabaseConfig = () => {
   const configService = new ConfigService()
@@ -32,11 +31,5 @@ const getDatabaseConfig = () => {
 
 export class AppModule {
 
-  constructor(private readonly connection: Connection) {
-    this.connection.connect().then(() => {
-      console.log('success')
-    }).catch(err => {
-      console.log('fail')
-    })
-  }
+ 
  }
