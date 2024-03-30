@@ -10,7 +10,8 @@ export class EmailService {
 
     constructor() {
         const configService = new ConfigService()
-        const from = configService.get<string>('EMAIL', '')
+        this.from = configService.get<string>('EMAIL', '')
+        
         this.transporter = nodemailer.createTransport({
             host: configService.get<string>('EMAIL_HOST', 'smtp.163.com'), // SMTP主机地址
             port: 465, // SMTP端口号
@@ -30,7 +31,12 @@ export class EmailService {
             subject,
             text,
         }
-
-        await this.transporter.sendEmail(mailOptions)
+        try {
+            const res = await this.transporter.sendMail(mailOptions)
+            return Promise.resolve(res)
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('发送消息失败')
+        }
     }
 }

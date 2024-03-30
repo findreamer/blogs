@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { RedisModule } from '@nestjs-modules/ioredis'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { ResponseInterceptor } from './interceptors/ResponseInterceptor';
+import { UserModule } from './modules/user/user.module';
 
 const configService = new ConfigService()
 
@@ -43,7 +44,7 @@ const getRedisConfig = () => {
 
 
 @Module({
-  imports: [
+  imports: [UserModule,
     ConfigModule.forRoot({
       isGlobal: true
     }),
