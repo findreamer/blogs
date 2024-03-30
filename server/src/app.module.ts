@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { RedisModule } from '@nestjs-modules/ioredis'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { ResponseInterceptor } from './interceptors/ResponseInterceptor';
 
 const configService = new ConfigService()
 
@@ -49,7 +51,12 @@ const getRedisConfig = () => {
     getRedisConfig()
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor
+    }
+  ],
 })
 
 
