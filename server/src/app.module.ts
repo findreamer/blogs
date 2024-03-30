@@ -31,5 +31,5 @@ const getDatabaseConfig = () => {
 
 export class AppModule {
 
- 
- }
+
+}

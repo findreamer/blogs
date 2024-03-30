@@ -1,0 +1,16 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:frontend": "cd ./frontend && pnpm run dev",
+    "dev:server": "cd ./server && pnpm run start:dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "md5": "^2.3.0"
+  }
+}

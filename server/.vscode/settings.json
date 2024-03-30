@@ -1,0 +1,11 @@
+{
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "typescript.preferences.pathMapping": {
+      "@app/*": ["src/*"],
+      "@services/*": ["src/services/*"],
+      "@modules/*": ["src/modules/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  }

@@ -30,5 +30,7 @@ export class EmailService {
             subject,
             text,
         }
+
+        await this.transporter.sendEmail(mailOptions)
     }
 }
