@@ -15,6 +15,7 @@ export class EmailService {
         this.transporter = nodemailer.createTransport({
             host: configService.get<string>('EMAIL_HOST', 'smtp.163.com'), // SMTP主机地址
             port: 465, // SMTP端口号
+            secure: true,
             auth: {
                 user: configService.get<string>('EMAIL', ''), // 发件人邮箱地址
                 pass: configService.get<string>('EMAIL_SECERT', '') // 发件人邮箱密码
@@ -25,12 +26,15 @@ export class EmailService {
 
 
     async sendEmail (to: string, subject: string, text: string):Promise<void> {
+        if (!to) return Promise.reject('请输入收件人邮箱地址！')
+        
         const mailOptions = {
             from: this.from,
             to,
             subject,
             text,
         }
+
         try {
             const res = await this.transporter.sendMail(mailOptions)
             return Promise.resolve(res)

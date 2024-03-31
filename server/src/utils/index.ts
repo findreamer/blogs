@@ -1,3 +1,5 @@
+export * from './patterns'
+
 import * as md5 from 'md5'
 
 export const generateRandomNumber = (digits: number = 6): string => {
