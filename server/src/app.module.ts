@@ -20,7 +20,7 @@ const getDatabaseConfig = () => {
     autoLoadEntities: true
 
   }
-  console.log('get config   => ', config)
+  // console.log('get config   => ', config)
   return TypeOrmModule.forRoot(config)
 }
 
