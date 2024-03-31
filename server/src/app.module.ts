@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { RedisModule } from '@nestjs-modules/ioredis'
-import { APP_INTERCEPTOR } from '@nestjs/core'
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core'
 import { ResponseInterceptor } from './interceptors/ResponseInterceptor';
 import { UserModule } from './modules/user/user.module';
+import { GlobalValidationPips } from './pipes/global-validation.pip';
+import { GlobalExceptionFilter } from './filters/global-exception.filter';
 
 const configService = new ConfigService()
 
@@ -56,6 +58,14 @@ const getRedisConfig = () => {
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: GlobalExceptionFilter
+    },
+    {
+      provide: APP_PIPE,
+      useClass: GlobalValidationPips
     }
   ],
 })
