@@ -1,10 +1,21 @@
 import { Injectable } from '@nestjs/common'
 import { EmailService } from '../../services/email.service'
-import { generateRandomNumber } from '../../utils/index'
+import { VERIFY_CODE_PREFIX, generateRandomNumber, hashPassword } from '../../utils/index'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { UserEntity } from '@app/entities/user.entity'
+import { CreateUserDto } from '@app/dtos/user.dto'
+import { RedisService } from '@app/services/redis.service'
 
 @Injectable()
 export class UserService {
-    constructor(private readonly emailService: EmailService) {
+
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
+        private readonly emailService: EmailService,
+        private readonly redisService: RedisService
+    ) {
 
     }
 
@@ -13,10 +24,40 @@ export class UserService {
         const text = `您的验证码是:${code}，5分钟内有效`
         try {
             await this.emailService.sendEmail(email, 'jueyin注册', text)
+            await this.redisService.set(`${VERIFY_CODE_PREFIX}:${email}`, code, 5 * 60)
             return code
 
         } catch (error) {
             return error
         }
+    }
+
+    async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+        const { email, password, code } = createUserDto
+        const redisCode = await this.redisService.get(`${VERIFY_CODE_PREFIX}:${email}`)
+        if (!redisCode) {
+            throw new Error('验证码已过期')
+        }
+
+        if (redisCode !== code) {
+            throw new Error('验证码不正确')
+        }
+
+        const isEmailExist = await this.getUserByEmail(email)
+        if (isEmailExist) {
+            throw new Error('用户已存在')
+        }
+
+        const res = await this.userRepository.save({
+            email,
+            password: hashPassword(password, email),
+            username: `用户${Date.now()}`
+        })
+
+        return res
+    }
+
+    async getUserByEmail(email: string): Promise<UserEntity | null> {
+        return this.userRepository.findOne({ where: { email } })
     }
 }

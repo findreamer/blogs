@@ -1,4 +1,5 @@
 export * from './patterns'
+export * from './constant'
 
 import * as md5 from 'md5'
 
