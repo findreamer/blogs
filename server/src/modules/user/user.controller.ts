@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, Req } from '@nestjs/common'
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, Res } from '@nestjs/common'
 import { UserService } from './user.service'
 import { ApiTags, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger'
-import { Request } from 'express';
+import { Response } from 'express';
 import { checkEmail } from '../../utils'
-import { CreateUserDto } from '@app/dtos/user.dto';
+import { CreateUserDto, LoginDto } from '@app/dtos/user.dto';
 import { UserEntity } from '@app/entities/user.entity';
 
 
@@ -41,9 +41,9 @@ export class UserController {
 
     @Post('register')
     @ApiBody({
-       type: CreateUserDto,
-       description: "注册用户",
-      
+        type: CreateUserDto,
+        description: "注册用户",
+
     })
     async register(@Body() user: CreateUserDto): Promise<UserEntity | Error> {
         try {
@@ -53,6 +53,24 @@ export class UserController {
         } catch (error) {
             throw new HttpException(error, 500)
         }
+    }
+
+    @Post('login')
+    async login(@Body() user: LoginDto, @Res() res: Response): Promise<boolean> {
+        const token = this.userService.login(user)
+        res.cookie('token', token, { httpOnly: true })
+        res.status(200).json({
+            message: 'success',
+            data: true,
+            status: 200
+        })
+        return true
+    }
+
+    @Get('logout')
+    async logout(@Res() res: Response) {
+        res.clearCookie('token')
+        res.send(200)
     }
 }
 

@@ -7,6 +7,7 @@ import { ResponseInterceptor } from './interceptors/ResponseInterceptor';
 import { UserModule } from './modules/user/user.module';
 import { GlobalValidationPips } from './pipes/global-validation.pip';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
+import {JwtModule} from '@nestjs/jwt'
 
 const configService = new ConfigService()
 
@@ -51,7 +52,8 @@ const getRedisConfig = () => {
       isGlobal: true
     }),
     getDatabaseConfig(),
-    getRedisConfig()
+    getRedisConfig(),
+    JwtModule.register({})
   ],
   controllers: [],
   providers: [

@@ -4,8 +4,9 @@ import { VERIFY_CODE_PREFIX, generateRandomNumber, hashPassword } from '../../ut
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserEntity } from '@app/entities/user.entity'
-import { CreateUserDto } from '@app/dtos/user.dto'
+import { CreateUserDto, LoginDto } from '@app/dtos/user.dto'
 import { RedisService } from '@app/services/redis.service'
+import { AuthService } from '@app/services/auth.service'
 
 @Injectable()
 export class UserService {
@@ -14,7 +15,8 @@ export class UserService {
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
         private readonly emailService: EmailService,
-        private readonly redisService: RedisService
+        private readonly redisService: RedisService,
+        private readonly authService: AuthService
     ) {
 
     }
@@ -59,5 +61,20 @@ export class UserService {
 
     async getUserByEmail(email: string): Promise<UserEntity | null> {
         return this.userRepository.findOne({ where: { email } })
+    }
+
+    async login(user: LoginDto) {
+        const entity = await this.getUserByEmailAndPassword(user.email, hashPassword(user.password, user.email))
+        if (!entity) {
+            throw new Error('邮箱或密码不正确')
+        }
+
+        const { id, email } = entity
+        const token = this.authService.generateJwtToken({ id, email })
+        return token
+    }
+
+    async getUserByEmailAndPassword(email: string, password: string): Promise<UserEntity | null> {
+        return this.userRepository.findOne({ where: { email, password } })
     }
 }
