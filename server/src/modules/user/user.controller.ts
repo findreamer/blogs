@@ -45,10 +45,17 @@ export class UserController {
         description: "注册用户",
 
     })
-    async register(@Body() user: CreateUserDto): Promise<UserEntity | Error> {
+    async register(@Body() user: CreateUserDto, @Res() res: Response): Promise<boolean | Error> {
         try {
-            const res = await this.userService.createUser(user)
-            return res
+            const userInfo = await this.userService.createUser(user)
+            delete userInfo.password
+
+            res.status(200).json({
+                message: 'success',
+                data: userInfo,
+                status: 200
+            })
+            return true
 
         } catch (error) {
             throw new HttpException(error, 500)

@@ -1,8 +1,9 @@
 import { Button, Form, FormInstance, Tabs, Input, Row, message } from 'antd'
 import { useEffect, useState } from 'react'
-import { getVerifyCode } from '@/api/user'
+import { getVerifyCode, login, register } from '@/api/user'
+import type { TabsProps } from 'antd'
 
-const TabPane = Tabs.TabPane
+const TabPane = Tabs
 const REQUIRED_RULE = [{ required: true, message: '请输入${label}' }]
 
 const VerifyCodeButton = ({ form }: { form: FormInstance }) => {
@@ -53,8 +54,27 @@ const VerifyCodeButton = ({ form }: { form: FormInstance }) => {
 
 const Login = () => {
 	const [form] = Form.useForm()
+	const [loading, setLoading] = useState(false)
 
 	const renderForm = (withCode?: boolean) => {
+
+		const handleSubmit = async () => {
+			const fields = await form.validateFields()
+
+			try {
+				if (withCode) {
+					await register(fields)
+				}
+
+				await login({ email: fields.email, password: fields.password })
+				message.success('登陆成功')
+
+			} finally {
+				setLoading(false)
+			}
+		}
+
+
 		return (
 			<div>
 				<Form form={form}>
@@ -78,21 +98,35 @@ const Login = () => {
 						) : null
 					}
 				</Form>
+				<Button type='primary' loading={loading} onClick={handleSubmit}>提交</Button>
 			</div>
 		)
 
 	}
 
+	const tabItems: TabsProps['items'] = [
+		{
+			key: 'login',
+			label: '登陆',
+			children: renderForm()
+		},
+
+		{
+			key: 'register',
+			label: '注册',
+			children: renderForm(true)
+		},
+
+	]
+
+	const handleTabChange = () => {
+		form.resetFields()
+	}
+
 	return <div className='h-full flex justify-center items-center'  >
 		<div className='w-125 bg-white p10 border-rd-2xl'>
-			<Tabs>
-				<TabPane key={'login'} tab="登陆">
+			<Tabs items={tabItems} onChange={handleTabChange}>
 
-					{renderForm()}
-				</TabPane>
-				<TabPane key={'register'} tab="注册">
-					{renderForm(true)}
-				</TabPane>
 			</Tabs>
 		</div>
 	</div>
