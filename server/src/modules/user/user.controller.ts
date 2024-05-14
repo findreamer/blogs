@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { checkEmail } from '../../utils'
 import { CreateUserDto, LoginDto } from '@app/dtos/user.dto';
 import { UserEntity } from '@app/entities/user.entity';
-
+import { NoAuth } from '../../decorators/no-auth.decorator'
 
 @ApiTags('users')
 @Controller('users')
@@ -24,6 +24,7 @@ export class UserController {
 
 
     })
+    @NoAuth()
     async getVerifyCode(@Query('email') email: string): Promise<string> {
         if (!email) {
             throw new HttpException('邮箱不能为空', HttpStatus.BAD_REQUEST)
@@ -45,6 +46,7 @@ export class UserController {
         description: "注册用户",
 
     })
+    @NoAuth()
     async register(@Body() user: CreateUserDto, @Res() res: Response): Promise<boolean | Error> {
         try {
             const userInfo = await this.userService.createUser(user)
@@ -63,6 +65,7 @@ export class UserController {
     }
 
     @Post('login')
+    @NoAuth()
     async login(@Body() user: LoginDto, @Res() res: Response): Promise<boolean> {
         const token = this.userService.login(user)
         res.cookie('token', token, { httpOnly: true })
