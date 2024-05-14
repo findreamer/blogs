@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { RedisModule } from '@nestjs-modules/ioredis'
@@ -7,7 +7,8 @@ import { ResponseInterceptor } from './interceptors/ResponseInterceptor';
 import { UserModule } from './modules/user/user.module';
 import { GlobalValidationPips } from './pipes/global-validation.pip';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
-import {JwtModule} from '@nestjs/jwt'
+import { JwtModule } from '@nestjs/jwt'
+import { AuthMiddleware } from './middilewares/auth. middleware';
 
 const configService = new ConfigService()
 
@@ -73,7 +74,9 @@ const getRedisConfig = () => {
 })
 
 
-export class AppModule {
+export class AppModule implements NestModule {
 
-
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('*')
+  }
 }

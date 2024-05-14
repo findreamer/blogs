@@ -1,12 +1,21 @@
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { Request, Response, NextFunction } from 'express'
 import { AuthService } from '../services/auth.service'
+import * as  cookieParser from 'cookie-parser'
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly authService: AuthService) { }
 
-  use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response, next: NextFunction) {
+    // 读取cookie，并设置到req
+    cookieParser()(res, res, () => { })
 
+    const token = req.cookies['token']
+    if (token) {
+      // 解析token
+      const decoded = this.authService.decodeJwtToken(token)
+      req['user'] = decoded
+    }
   }
 }
