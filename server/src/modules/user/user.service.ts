@@ -77,4 +77,14 @@ export class UserService {
     async getUserByEmailAndPassword(email: string, password: string): Promise<UserEntity | null> {
         return this.userRepository.findOne({ where: { email, password } })
     }
+
+    async getUserInfo(userId: number): Promise<Omit<UserEntity, 'passsword'> | null> {
+        const userInfo = await this.userRepository.findOne({ where: { id: userId } })
+        if (!userInfo) {
+            return null
+        }
+        delete userInfo.password
+        return userInfo
+
+    }
 }

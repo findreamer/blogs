@@ -4,8 +4,7 @@ import { ApiTags, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger'
 import { Response } from 'express';
 import { checkEmail } from '../../utils'
 import { CreateUserDto, LoginDto } from '@app/dtos/user.dto';
-import { UserEntity } from '@app/entities/user.entity';
-import { NoAuth } from '../../decorators/no-auth.decorator'
+import { NoAuth, User } from '../../decorators'
 
 @ApiTags('users')
 @Controller('users')
@@ -81,6 +80,11 @@ export class UserController {
     async logout(@Res() res: Response) {
         res.clearCookie('token')
         res.send(200)
+    }
+
+    @Get('getUserInfo')
+    async getUserInfo(@User('id') userId: number) {
+        return await this.userService.getUserInfo(userId)
     }
 }
 
