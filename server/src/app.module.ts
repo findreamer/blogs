@@ -9,6 +9,7 @@ import { GlobalValidationPips } from './pipes/global-validation.pip';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
 import { JwtModule } from '@nestjs/jwt'
 import { AuthMiddleware } from './middilewares/auth. middleware';
+import { NestMinioModule } from 'nestjs-minio'
 
 const configService = new ConfigService()
 
@@ -47,6 +48,23 @@ const getRedisConfig = () => {
 }
 
 
+/** 获取 minio 配置 */
+const getMinioConfig = () => {
+  const configService = new ConfigService()
+  const endPoint = configService.get<string>('MINIO_ENDPOINT', 'localhost');
+  const accessKey = configService.get<string>('MINIO_ACCESSKEY', 'accessKey');
+  const secretKey = configService.get<string>('MINIO_SECRET_KEY', 'secretKey');
+
+  return NestMinioModule.register({
+    isGlobal: true,
+    endPoint,
+    port: 9000,
+    accessKey,
+    secretKey,
+    useSSL: false
+  })
+}
+
 @Module({
   imports: [UserModule,
     ConfigModule.forRoot({
@@ -54,6 +72,7 @@ const getRedisConfig = () => {
     }),
     getDatabaseConfig(),
     getRedisConfig(),
+    getMinioConfig(),
     JwtModule.register({})
   ],
   controllers: [],
