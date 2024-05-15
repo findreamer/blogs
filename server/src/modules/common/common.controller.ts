@@ -7,9 +7,10 @@ export class CommonController {
   constructor(private readonly minioService: MinioService) { }
 
   @Post('upload')
+  // 使用内置zhuan shi qi
   @UseInterceptors(FileInterceptor('files'))
   @UsePipes(new FilePipe())
   async upload(@UploadedFiles() files: UploadFile[]) {
-
+    return this.minioService.uploadFiles(files)
   }
 }
