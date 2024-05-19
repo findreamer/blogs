@@ -5,11 +5,13 @@ import { RedisModule } from '@nestjs-modules/ioredis'
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core'
 import { ResponseInterceptor } from './interceptors/ResponseInterceptor';
 import { UserModule } from './modules/user/user.module';
-import { GlobalValidationPips } from './pipes/global-validation.pip';
+import { GlobalValidationPips } from './pipes/global-validation.pipe';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
 import { JwtModule } from '@nestjs/jwt'
 import { AuthMiddleware } from './middilewares/auth. middleware';
 import { NestMinioModule } from 'nestjs-minio'
+import { AuthService } from './services/auth.service'
+import { CommonModule } from './modules/common/common.module'
 
 const configService = new ConfigService()
 
@@ -67,6 +69,7 @@ const getMinioConfig = () => {
 
 @Module({
   imports: [UserModule,
+    CommonModule,
     ConfigModule.forRoot({
       isGlobal: true
     }),
@@ -88,12 +91,13 @@ const getMinioConfig = () => {
     {
       provide: APP_PIPE,
       useClass: GlobalValidationPips
-    }
+    },
+    AuthService
   ],
 })
 
 
-export class AppModule implements NestModule {
+export class AppModule {
 
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes('*')

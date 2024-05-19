@@ -34,5 +34,16 @@ export class MinioService {
     return res
   }
 
-  async getFile(objectName: string) { }
+  async getFile(objectName: string) {
+    const [url, stat] = await Promise.all(
+      [
+        // 获取资源，并设置过期时间
+        this.minioClient.presignedGetObject(MinioService.bucketName, objectName, 24 * 60 * 60,),
+        this.minioClient.statObject(MinioService.bucketName, objectName)
+
+      ]
+    )
+
+    return { url, stat }
+  }
 }
