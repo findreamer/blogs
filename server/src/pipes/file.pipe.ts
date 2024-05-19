@@ -8,9 +8,10 @@ export class FilePipe implements PipeTransform {
     console.log('files => ', files)
     const arr = files.map((file) => {
       const ext = path.extname(file.originalname);
+      const fileName = path.basename(file.originalname)
       return {
         ...file,
-        originalname: `${file.originalname}_${Date.now()}${generateRandomNumber()}${ext}`,
+        originalname: `${fileName}_${Date.now()}${generateRandomNumber()}${ext}`,
       };
     });
     return arr;
