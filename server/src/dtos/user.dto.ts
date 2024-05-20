@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Length } from 'class-validator'
+import { IsEmail, IsEmpty, IsNotEmpty, Length, isEmpty } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateUserDto {
@@ -40,4 +40,18 @@ export class LoginDto {
         message: "密码不能为空"
     })
     password: string
+}
+
+export class UpdateUserInfoDto {
+    @IsEmpty({
+        message: "用户名不可为空"
+    })
+    username: string
+
+    @IsEmpty({
+        message: "头像不可为空"
+    })
+    avatar: string
+
+    info?: string
 }

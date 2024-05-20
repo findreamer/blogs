@@ -87,4 +87,8 @@ export class UserService {
         return userInfo
 
     }
+
+    async updateUserInfo() {
+
+    }
 }

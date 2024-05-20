@@ -3,7 +3,7 @@ import { UserService } from './user.service'
 import { ApiTags, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger'
 import { Response } from 'express';
 import { checkEmail } from '../../utils'
-import { CreateUserDto, LoginDto } from '@app/dtos/user.dto';
+import { CreateUserDto, LoginDto, UpdateUserInfoDto } from '@app/dtos/user.dto';
 import { NoAuth, User } from '../../decorators'
 
 @ApiTags('users')
@@ -86,6 +86,22 @@ export class UserController {
     async getUserInfo(@User('id') userId: number) {
         return await this.userService.getUserInfo(userId)
     }
+
+    @Post('updateUserInfo')
+    async updateUserInfo(@Body() userInfo: UpdateUserInfoDto, @User('id') userId: number): Promise<boolean> {
+
+        try {
+            await this.userService.updateUserInfo(userId, userInfo)
+
+            return true
+        } catch (error) {
+            return false
+        }
+
+
+    }
+
+
 }
 
 
