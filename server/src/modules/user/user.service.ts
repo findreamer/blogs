@@ -4,7 +4,7 @@ import { VERIFY_CODE_PREFIX, generateRandomNumber, hashPassword } from '../../ut
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserEntity } from '@app/entities/user.entity'
-import { CreateUserDto, LoginDto } from '@app/dtos/user.dto'
+import { CreateUserDto, LoginDto, UpdateUserInfoDto } from '@app/dtos/user.dto'
 import { RedisService } from '@app/services/redis.service'
 import { AuthService } from '@app/services/auth.service'
 
@@ -88,7 +88,8 @@ export class UserService {
 
     }
 
-    async updateUserInfo() {
-
+    async updateUserInfo(id: number, userInfo: UpdateUserInfoDto) {
+        const res = await this.userRepository.update({ id }, userInfo)
+        return res
     }
 }
