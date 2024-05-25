@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { RedisModule } from '@nestjs-modules/ioredis'
-import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core'
+import { APP_INTERCEPTOR, APP_PIPE, APP_GUARD } from '@nestjs/core'
 import { ResponseInterceptor } from './interceptors/ResponseInterceptor';
 import { UserModule } from './modules/user/user.module';
 import { GlobalValidationPips } from './pipes/global-validation.pipe';
@@ -11,6 +11,7 @@ import { JwtModule } from '@nestjs/jwt'
 import { AuthMiddleware } from './middilewares/auth. middleware';
 import { NestMinioModule } from 'nestjs-minio'
 import { AuthService } from './services/auth.service'
+import { AuthGuard } from './guards/auth.guard'
 import { CommonModule } from './modules/common/common.module'
 
 const configService = new ConfigService()
@@ -91,6 +92,10 @@ const getMinioConfig = () => {
     {
       provide: APP_PIPE,
       useClass: GlobalValidationPips
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
     },
     AuthService
   ],

@@ -92,4 +92,13 @@ export class UserService {
         const res = await this.userRepository.update({ id }, userInfo)
         return res
     }
+
+    async getUserInfoById(id: number) {
+        const userInfo = await this.userRepository.findOne({
+            where: { id },
+            select: ['avatar', 'id', 'info', 'username']
+        })
+
+        return userInfo
+    }
 }

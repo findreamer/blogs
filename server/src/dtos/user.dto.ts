@@ -43,12 +43,12 @@ export class LoginDto {
 }
 
 export class UpdateUserInfoDto {
-    @IsEmpty({
+    @IsNotEmpty({
         message: "用户名不可为空"
     })
     username: string
 
-    @IsEmpty({
+    @IsNotEmpty({
         message: "头像不可为空"
     })
     avatar: string

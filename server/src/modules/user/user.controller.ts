@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, Res } from '@nestjs/common'
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query, Res } from '@nestjs/common'
 import { UserService } from './user.service'
 import { ApiTags, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger'
 import { Response } from 'express';
@@ -66,7 +66,9 @@ export class UserController {
     @Post('login')
     @NoAuth()
     async login(@Body() user: LoginDto, @Res() res: Response): Promise<boolean> {
-        const token = this.userService.login(user)
+
+        const token = await this.userService.login(user)
+
         res.cookie('token', token, { httpOnly: true })
         res.status(200).json({
             message: 'success',
@@ -89,7 +91,6 @@ export class UserController {
 
     @Post('updateUserInfo')
     async updateUserInfo(@Body() userInfo: UpdateUserInfoDto, @User('id') userId: number): Promise<boolean> {
-
         try {
             await this.userService.updateUserInfo(userId, userInfo)
 
@@ -99,6 +100,12 @@ export class UserController {
         }
 
 
+    }
+
+
+    @Get('getUserInfoById/:id')
+    async getUserInfoById(@Param('id') id: number) {
+        return await this.userService.getUserInfoById(id)
     }
 
 

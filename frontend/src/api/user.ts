@@ -24,3 +24,24 @@ export const login = (params: {
 export const logout = () => {
     return axios.get(`/users/logout`)
 }
+
+
+export const getUserInfoById = (id: number) => {
+    return axios.get('/users/getUserInfo/' + id)
+}
+
+export const updateUserInfo = (userInfo: {
+    username: string;
+    info: string;
+    avatar: string;
+}) => {
+    return axios.post('/users/updateUserInfo', userInfo)
+}
+
+export const getUserInfo = () => {
+    return axios.get('/users/getUserInfo')
+}
+
+export const uploadFile = (data: FormData) => {
+    return axios.post('/common/upload', data)
+}
