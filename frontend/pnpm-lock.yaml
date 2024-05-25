@@ -67,6 +67,9 @@ devDependencies:
   '@typescript-eslint/parser':
     specifier: ^7.2.0
     version: 7.6.0(eslint@8.57.0)(typescript@5.4.5)
+  '@unocss/preset-attributify':
+    specifier: ^0.60.3
+    version: 0.60.3
   '@vitejs/plugin-react':
     specifier: ^4.2.1
     version: 4.2.1(vite@5.2.8)
@@ -1615,6 +1618,10 @@ packages:
     resolution: {integrity: sha512-9i+eAJAqvy9bv0vrQxUU7VtR+wO6Vfk6dqrPHKRV/vlbwRT18v/C++dQ2L6PLM1CKxgNTeld0iTlpo8J3xZlxQ==}
     dev: true
 
+  /@unocss/core@0.60.3:
+    resolution: {integrity: sha512-4bBX1pavDl2DSCozEII7bxYGT0IkyO7kKlUuCtooTePWyLjf2F7essdzHkJ00EpNR64kkebR9V0lqBMBo07VPw==}
+    dev: true
+
   /@unocss/extractor-arbitrary-variants@0.60.2:
     resolution: {integrity: sha512-uO4ZPUcaYvyWshXnqzFnSWeh+Du6xVYwaz3oBKq4n7Ryw2Grc0IhiZe6n9MC8w6nkbopdo6ngr5LnFGp86horQ==}
     dependencies:
@@ -1649,6 +1656,12 @@ packages:
     resolution: {integrity: sha512-PQDObhVtopL/eEceAHX/pBmPQhm50l4yhTu/pMH31hL13DuRYODngWe00jjgmMRTwIAFpMpDVKk2GjxeD05+cQ==}
     dependencies:
       '@unocss/core': 0.60.2
+    dev: true
+
+  /@unocss/preset-attributify@0.60.3:
+    resolution: {integrity: sha512-G/Lx9xq/tVKvjp/CcACyLU+p3mcrpgkMvy+Z3NSHfBAZAmbieBMFhwROxt5R8Bny66q3fYDtxxx+likpokpOAQ==}
+    dependencies:
+      '@unocss/core': 0.60.3
     dev: true
 
   /@unocss/preset-icons@0.60.2:
