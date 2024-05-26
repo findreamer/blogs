@@ -13,7 +13,7 @@ import { NestMinioModule } from 'nestjs-minio'
 import { AuthService } from './services/auth.service'
 import { AuthGuard } from './guards/auth.guard'
 import { CommonModule } from './modules/common/common.module'
-
+import { ArticleModule } from './modules/article/article.module'
 const configService = new ConfigService()
 
 /** 获取数据库配置 */
@@ -71,6 +71,7 @@ const getMinioConfig = () => {
 @Module({
   imports: [UserModule,
     CommonModule,
+    ArticleModule,
     ConfigModule.forRoot({
       isGlobal: true
     }),
