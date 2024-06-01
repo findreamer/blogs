@@ -1,9 +1,25 @@
-import { useEffect, useState } from "react";
-import { Button, Popover, Row, Input, Form, Select, DatePicker } from "antd";
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router";
+import {
+  Button,
+  Popover,
+  Row,
+  Input,
+  Form,
+  Select,
+  DatePicker,
+  message,
+} from "antd";
 import { Editor as BEditor } from "@bytemd/react";
 import { uploadFile } from "@/api/user";
 import { useQuery } from "@/hooks";
-import { getArticleInfo, getCategoryList } from "@/api/article";
+import {
+  getArticleInfo,
+  getCategoryList,
+  createOrUpdateArticle,
+  publishArticle,
+} from "@/api/article";
+import { debounce } from "lodash";
 import dayjs from "dayjs";
 import gfm from "@bytemd/plugin-gfm";
 import highlight from "@bytemd/plugin-highlight";
@@ -14,14 +30,30 @@ import "./editor.css";
 const plugins = [gfm(), highlight()];
 
 const Editor = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [form] = Form.useForm();
   const [categoryList, setCategoryList] = useState([]);
   const [data, setData] = useState<any>({});
   const [value, setValue] = useState("");
+  const [init, setInit] = useState(false);
+
   const { id } = useQuery<{ id: string }>();
 
-  const publish = () => {};
+  const publish = async () => {
+    const fields = await form.validateFields();
+    if (fields.time) {
+      fields.time = dayjs(fields.time).format("YYYY-MM-DD HH:mm:ss");
+    }
+    const res = await publishArticle({
+      id,
+      ...fields,
+    });
+    if (res.data) {
+      message.success("发布成功");
+      navigate("/user/article");
+    }
+  };
   const handleUpload = async (files: File[]) => {
     const formData = new FormData();
     for (const file of files) {
@@ -31,15 +63,51 @@ const Editor = () => {
     return res.data.map((item: any) => ({ url: item.url }));
   };
 
+  const updateArticle = useCallback(
+    debounce((id: number, title: string, content: string) => {
+      createOrUpdateArticle({
+        id,
+        title,
+        content,
+      });
+    }, 1000),
+    []
+  );
+
   useEffect(() => {
     if (!id) return;
 
     getArticleInfo(id).then((res) => {
       console.log(res);
+      setData(res.data);
+      setTitle(res.data.title);
+      setValue(res.data.content);
+      setTimeout(() => setInit(true));
     });
 
-    getCategoryList().then();
+    getCategoryList().then((res) => {
+      setCategoryList(
+        res.data.map((item: any) => {
+          return {
+            ...item,
+            value: item.id,
+            label: item.name,
+          };
+        })
+      );
+    });
   }, []);
+
+  useEffect(() => {
+    if (!init || !id) {
+      return;
+    }
+    updateArticle(+(id || ""), title, value);
+  }, [title, value, init, id]);
+
+  if (!id || !init) {
+    return null;
+  }
 
   return (
     <div className="h-full flex flex-col">
