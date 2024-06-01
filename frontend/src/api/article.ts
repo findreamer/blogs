@@ -13,7 +13,7 @@ export const createOrUpdateArticle = (params: {
   title?: string;
   content?: string;
 }) => {
-  return axios.post("/articles/createOrUpdate", params);
+  return axios.post("/article/createOrUpdate", params);
 };
 
 export const publishArticle = (params: {
@@ -21,5 +21,13 @@ export const publishArticle = (params: {
   categoryId: number;
   introduction: string;
 }) => {
-  return axios.post(`/articles/publish`, params);
+  return axios.post(`/article/publish`, params);
+};
+
+export const getMyArticle = () => {
+  return axios.get("/article/getMyArticle");
+};
+
+export const deleteArticle = (articleId: number) => {
+  return axios.post("/article/deleteArticle", { articleId });
 };
