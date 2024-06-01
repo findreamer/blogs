@@ -1,25 +1,23 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty } from 'class-validator';
 
 /** 创建文章 */
 export class CreateArticleDto {
-  id?: number
-  title: string
-  content: string
+  id?: number;
+  title: string;
+  content: string;
 }
 
 export class PublishArticleDto {
   @IsNotEmpty()
-  id: number
+  id: number;
 
   /** 文章简介 */
   @IsNotEmpty()
-  introduction: string
-
+  introduction: string;
 
   /** 文章分类 */
   @IsNotEmpty()
-  categoryId: number
+  categoryId: number;
 
-
+  time?: Date;
 }
-

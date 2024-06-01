@@ -1,45 +1,50 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({
-  name: 'article'
+  name: 'article',
 })
 export class ArticleEntity {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Column()
-  title: string
+  title: string;
 
   @Column()
-  content: string
+  content: string;
 
   @Column()
-  introduction: string
+  introduction: string;
 
   @Column()
-  views: number
+  views: number;
 
   @Column()
-  likes: number
+  likes: number;
 
   @Column()
-  favorites: number
+  favorites: number;
 
   @Column({
-    name: 'creator_id'
+    name: 'creator_id',
   })
-  creatorId: number
+  creatorId: number;
 
   @Column({
-    name: 'creator_name'
+    name: 'creator_name',
   })
-  creatorName: string
+  creatorName: string;
 
   @Column({
-    name: 'category_id'
+    name: 'category_id',
   })
-  categoryId: number
+  categoryId: number;
 
   @Column({
     name: 'is_deleted',
