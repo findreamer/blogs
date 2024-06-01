@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Popover, Row, Input, Form, Select, DatePicker } from "antd";
 import { Editor as BEditor } from "@bytemd/react";
 import { uploadFile } from "@/api/user";
+import { useQuery } from "@/hooks";
+import { getArticleInfo, getCategoryList } from "@/api/article";
 import dayjs from "dayjs";
 import gfm from "@bytemd/plugin-gfm";
 import highlight from "@bytemd/plugin-highlight";
@@ -17,6 +19,7 @@ const Editor = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [data, setData] = useState<any>({});
   const [value, setValue] = useState("");
+  const { id } = useQuery<{ id: string }>();
 
   const publish = () => {};
   const handleUpload = async (files: File[]) => {
@@ -27,6 +30,16 @@ const Editor = () => {
     const res = await uploadFile(formData);
     return res.data.map((item: any) => ({ url: item.url }));
   };
+
+  useEffect(() => {
+    if (!id) return;
+
+    getArticleInfo(id).then((res) => {
+      console.log(res);
+    });
+
+    getCategoryList().then();
+  }, []);
 
   return (
     <div className="h-full flex flex-col">
